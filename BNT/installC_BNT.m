@@ -1,5 +1,5 @@
-BNT_HOME = '/home/ai2/murphyk/matlab/FullBNT'; % edit this
-
+%BNT_HOME = '/home/hande.alemdar/matlab/bnt'; % edit this
+BNT_HOME = 'E:\PHD\Coding\bnt';
 d = fullfile(BNT_HOME, 'BNT');
 %PC = (strncmp(computer,'PC',2));
 
@@ -18,7 +18,7 @@ mex convert_to_sparse_table.c
 
 % Written by Wei Hu
 cd(sprintf('%s/inference/static/@jtree_sparse_inf_engine', d))
-mex init_pot.c
+mex init_pot.c 
 mex collect_evidence.c
 mex distribute_evidence.c
 

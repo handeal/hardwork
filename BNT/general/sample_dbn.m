@@ -46,11 +46,7 @@ for i=1:ss
     ps = parents(bnet.dag, i);
     e = bnet.equiv_class(i,1);
     pvals = seq(ps);
-    if isa(bnet.CPD{e},'bernoulli_CPD')
-        seq{i,t} = sample_node_vector(bnet.CPD{e}, pvals,bnet.senseSize);
-    else
-        seq{i,t} = sample_node(bnet.CPD{e}, pvals);
-    end
+    seq{i,t} = sample_node(bnet.CPD{e}, pvals);
     %fprintf('sample i=%d,t=%d,val=%d,ps\n', i, t, seq(i,t)); pvals(:)'
   end
 end
@@ -62,11 +58,7 @@ while ~done
       ps = parents(bnet.dag, i+ss) + (t-2)*ss;
       e = bnet.equiv_class(i,2);
       pvals = seq(ps);
-      if isa(bnet.CPD{e},'bernoulli_CPD')
-          seq{i,t} = sample_node_vector(bnet.CPD{e}, pvals,bnet.senseSize);
-      else
-          seq{i,t} = sample_node(bnet.CPD{e}, pvals);
-      end
+      seq{i,t} = sample_node(bnet.CPD{e}, pvals);
       %fprintf('sample i=%d,t=%d,val=%d,ps\n', i, t, seq(i,t)); pvals(:)'
     end
   end

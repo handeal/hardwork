@@ -83,6 +83,7 @@ for i=1:2:length(args)
     if ischar(T)
       switch T
        case 'unif', CPD.CPT = mk_stochastic(myones(fam_sz));
+       %case 'unif', CPD.CPT = mk_stochastic(myones(fam_sz) + normrnd(0,0.1, fam_sz));
        case 'rnd',  CPD.CPT = mk_stochastic(myrand(fam_sz));
        otherwise,   error(['invalid CPT ' T]);       
       end

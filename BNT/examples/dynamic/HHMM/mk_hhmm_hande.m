@@ -164,14 +164,16 @@ for d=1:D
   Qsz = ns(Qnodes(d));
   if isstr(startprob{d})
     switch startprob{d}
-     case 'unif', startprob{d} = mk_stochastic(ones(Qpsz, Qsz));
+     %case 'unif', startprob{d} = mk_stochastic(ones(Qpsz, Qsz));
+     case 'unif', startprob{d} = mk_stochastic(ones(Qpsz, Qsz) + normrnd(0,0.1,[Qpsz Qsz]) );
      case 'rnd', startprob{d} = mk_stochastic(rand(Qpsz, Qsz));
      case 'leftstart', startprob{d} = zeros(Qpsz, Qsz); startprob{d}(:,1) = 1;
     end
   end
   if isstr(transprob{d})
     switch transprob{d}
-     case 'unif', transprob{d} = mk_stochastic(ones(Qsz, Qpsz, Qsz));
+     %case 'unif', transprob{d} = mk_stochastic(ones(Qsz, Qpsz, Qsz));
+     case 'unif', transprob{d} = mk_stochastic(ones(Qsz, Qpsz, Qsz) + normrnd(0,0.1,[Qsz Qpsz Qsz]) );
      case 'rnd', transprob{d} = mk_stochastic(rand(Qsz, Qpsz, Qsz));
      case 'leftright',
       LR = mk_leftright_transmat(Qsz, selfprob);
@@ -181,7 +183,8 @@ for d=1:D
   end
   if isstr(termprob{d})
     switch termprob{d}
-     case 'unif', termprob{d} = mk_stochastic(ones(Qpsz, Qsz, 2));
+     %case 'unif', termprob{d} = mk_stochastic(ones(Qpsz, Qsz, 2));
+     case 'unif', termprob{d} = mk_stochastic(ones(Qpsz, Qsz, 2) + normrnd(0,0.1,[Qpsz Qsz 2]) );
      case 'rnd', termprob{d} = mk_stochastic(rand(Qpsz, Qsz, 2));
      case 'rightstop',
       %termprob(k,i,t) Might terminate if i=Qsz; will not terminate if i<Qsz
@@ -241,13 +244,26 @@ end
 
 d = 1;
 if F1
-  bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+  if D == 2
+       bnet.CPD{eclass(Qnodes(d),2)} = hhmm2Q_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
 					    'Fbelow', Fnodes_ndx(d+1), ...
 					    'startprob', startprob{d}, 'transprob', transprob{d});
+  else
+        bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+					    'Fbelow', Fnodes_ndx(d+1), ...
+					    'startprob', startprob{d}, 'transprob', transprob{d});
+  end
 else
-    bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, ...
+    if D == 2
+            bnet.CPD{eclass(Qnodes(d),2)} = hhmm2Q_CPD(bnet, Qnodes(d)+ss, ...
 					    'Fbelow', Fnodes_ndx(d+1), ...
 					    'startprob', startprob{d}, 'transprob', transprob{d});
+    else
+            bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, ...
+					    'Fbelow', Fnodes_ndx(d+1), ...
+					    'startprob', startprob{d}, 'transprob', transprob{d});
+    end
+
 end
 for d=2:D-1
   if allQ
@@ -256,9 +272,16 @@ for d=2:D-1
     Qps = Qnodes(d-1);
   end
   Qps = Qps + ss; % since all in slice 2
-  bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+  if D == 2
+        bnet.CPD{eclass(Qnodes(d),2)} = hhmm2Q_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
 					    'Fbelow', Fnodes_ndx(d+1), 'Qps', Qps, ...
 					    'startprob', startprob{d}, 'transprob', transprob{d});
+  else
+        bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+					    'Fbelow', Fnodes_ndx(d+1), 'Qps', Qps, ...
+					    'startprob', startprob{d}, 'transprob', transprob{d});
+  end
+
 end
 d = D;
 if allQ
@@ -267,6 +290,13 @@ else
   Qps = Qnodes(d-1);
 end
 Qps = Qps + ss; % since all in slice 2
-bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+if D == 2
+    bnet.CPD{eclass(Qnodes(d),2)} = hhmm2Q_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
 					  'Qps', Qps, ...
 					  'startprob', startprob{d}, 'transprob', transprob{d});
+else
+    bnet.CPD{eclass(Qnodes(d),2)} = hhmmQ_CPD(bnet, Qnodes(d)+ss, 'Fself', Fnodes_ndx(d), ...
+					  'Qps', Qps, ...
+					  'startprob', startprob{d}, 'transprob', transprob{d});
+end
+

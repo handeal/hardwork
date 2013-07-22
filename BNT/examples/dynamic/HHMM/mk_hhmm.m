@@ -214,12 +214,7 @@ end
 bnet.CPD{eclass(Fnodes_ndx(D),1)}  = tabular_CPD(bnet, Fnodes_ndx(D), 'CPT', termprob{D});
 
 if discrete_obs
-    if senseSize == 1
-        bnet.CPD{eclass(Onode,1)} = tabular_CPD(bnet, Onode, Oargs{:});
-    else
-        bnet.senseSize = senseSize;
-        bnet.CPD{eclass(Onode,1)} = bernoulli_CPD(bnet, Onode, Oargs{:});
-    end
+  bnet.CPD{eclass(Onode,1)} = tabular_CPD(bnet, Onode, Oargs{:});
 else
   bnet.CPD{eclass(Onode,1)} = gaussian_CPD(bnet, Onode, Oargs{:});
 end

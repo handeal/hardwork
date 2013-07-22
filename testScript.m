@@ -1,5 +1,6 @@
 function  testScript(foldNum, numAct, numSense, numActions)
-
+disp(sprintf('Fold %d, Number of Actions %d',foldNum,numActions ));
+disp(sprintf('Number of Activities %d, Number of Sensors %d',numAct,numSense ));
 Qsize = [numAct numActions]; % Number of states in each level 
 D = 2;  % depth of the HHMM
 
@@ -8,14 +9,14 @@ termprob  = cell(1,D);
 startprob = cell(1,D);
 
 % LEVEL 1
-startprob{1} = 'unif';
-transprob{1} = 'rnd';
-termprob{1}  = 'rnd';
+startprob{1} = 'rnd';
+transprob{1} = 'unif';
+termprob{1}  = 'unif';
 
 % LEVEL 2
 startprob{2} = 'unif';
-transprob{2} = 'rnd';
-termprob{2}  = 'rnd';
+transprob{2} = 'unif';
+termprob{2}  = 'unif';
 
 % OBS LEVEl
 Osize = 2;
@@ -25,7 +26,7 @@ Qnodes = [Q1 Q2];
 
 
 senseSize = numSense;
-Oargs = {'CPT', 'rnd'};
+Oargs = {'CPT', 'unif'};
 bnet = mk_hhmm_hande('Qsizes', Qsize, 'Osize', Osize, 'discrete_obs', 1, ...
     'Oargs', Oargs, 'Ops', Qnodes, 'senseSize' , senseSize, ...
     'startprob', startprob, 'transprob', transprob, 'termprob', termprob);
@@ -48,7 +49,7 @@ end
 engine_init = smoother_engine(jtree_2TBN_inf_engine(bnet));
 
 [bnet_learned, LL, engine_learned] = ...
-    learn_params_dbn_em(engine_init, data, 'max_iter', 10, 'thresh', 1e-2);
+    learn_params_dbn_em(engine_init, data, 'max_iter', 50, 'thresh', 1e-2);
 
 testData = cell(1,1);
 testData{1}(Onodes,:) = num2cell(folds{foldNum}.testFeatMat{1}+1); 
