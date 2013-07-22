@@ -5,7 +5,7 @@ function E = isemptycell(C)
 % This is equivalent to E = cellfun('isempty', C),
 % where cellfun is a function built-in to matlab version 5.3 or newer.
 
-if 0 % all(version('-release') >= 12)
+if 1 % all(version('-release') >= 12)
   E = cellfun('isempty', C);
 else
   E = zeros(size(C));
